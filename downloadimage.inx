@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+    <_name>Download Images</_name>
+    <id>org.rzymek.filter.downloadImage</id>
+	<dependency type="executable" location="extensions">downloadimage.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+	<param name="selectedonly" type="boolean" _gui-text="Download only selected images">false</param>
+    <effect needs-live-preview="false">
+		<object-type>all</object-type>
+                <effects-menu>
+                    <submenu _name="Images"/>
+                </effects-menu>
+    </effect>
+    <script>
+        <command reldir="extensions" interpreter="python">downloadimage.py</command>
+    </script>
+</inkscape-extension>
