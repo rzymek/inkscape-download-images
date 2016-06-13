@@ -25,7 +25,7 @@ class Embedder(inkex.Effect):
     def __init__(self):
         inkex.Effect.__init__(self)
         self.OptionParser.add_option("-s", "--selectedonly",
-            action="store", type="inkbool", 
+            action="store", type="inkbool",
             dest="selectedonly", default=False,
             help="embed only selected images")
 
@@ -72,16 +72,24 @@ class Embedder(inkex.Effect):
                 path=unicode(path, "utf-8")
             except TypeError:
                 path=path
-           
+
             if (not os.path.isfile(path)):
                 if url.scheme.lower() == 'http':
                     remoteFile = urllib2.urlopen(xlink)
-                    if not os.path.exists('images'):
-                        os.makedirs('images')
-                    filename = 'images/'+re.sub('[^\w\-_\. ]', '_', xlink)
-                    with open(filename,'wb') as output:
+                    images = os.path.dirname(self.svg_file) + '/images';
+                    if not os.path.exists(images):
+                        os.makedirs(images)
+
+                    basename = os.path.basename(url.path)
+                    filename = basename
+                    idx=1
+                    while(os.path.exists(os.path.realpath(images+'/'+filename))):
+                        filename = str(idx) + '-' + basename
+                        idx += 1
+                    with open( os.path.realpath(images+'/'+filename),'wb') as output:
                         output.write(remoteFile.read())
-                    node.set(inkex.addNS('href','xlink'), filename)
+                    node.set(inkex.addNS('href','xlink'), 'images/'+filename)
+                    node.set(inkex.addNS('absref','sodipodi'), os.path.realpath(images+'/'+filename))
                 else:
                     inkex.errormsg(_('No xlink:href or sodipodi:absref attributes found, or they do not point to an existing file! Unable to embed image.'))
                     if path:
